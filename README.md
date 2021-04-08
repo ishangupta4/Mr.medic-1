@@ -25,10 +25,28 @@ git clone 'repository_url'
 - download flutter from flutter : https://flutter.dev/docs/get-started/install
 - install flutter and dart plugins for your text editor.
 - open project in your preferred text editor and download all dependencies from pubspec.yaml (automatically downloaded during first run)
+- create a folder named api in lib folder
+- create a file name keys.dart
+- paste this key in the file 
+```
+import 'package:scoped_model/scoped_model.dart';
+
+class ApiKeys extends Model {
+  static final uri = 'http://evening-dusk-90900.herokuapp.com/';
+}
+```
 - run project using command
 
 ```
 flutter run
+```
+-Login credentials(Dummy Users) for app:
+```
+patient-username:  ishan@email.com
+patient-password:  12345
+
+doctor-username:  doctorNew@email.com
+doctor-password:  12345
 ```
 
 A few resources to get you started if this is your first Flutter project:

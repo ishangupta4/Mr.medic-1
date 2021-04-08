@@ -102,22 +102,21 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             child: ScopedModelDescendant<MainModel>(
               builder: (BuildContext context, Widget child, MainModel model) {
-                return Container(
-                  height: getViewportHeight(context) * 0.03,
-                  alignment: Alignment.center,
-                  child: Text(
-                    _authMode == AuthMode.PatientLogin ||
-                            _authMode == AuthMode.DoctorLogin
-                        ? "Login"
-                        : "Signup",
-                    style: TextStyle(
-                        fontFamily: "Ubuntu",
-                        fontSize: getViewportHeight(context) * 0.02),
-                  ),
-                );
+                return widget.model.isLoading
+                    ? CircularProgressIndicator()
+                    : Text(
+                        _authMode == AuthMode.PatientLogin ||
+                                _authMode == AuthMode.DoctorLogin
+                            ? "Login"
+                            : "Signup",
+                        style: TextStyle(
+                            fontFamily: "Ubuntu",
+                            fontSize: getViewportHeight(context) * 0.02),
+                      );
               },
             ),
             onPressed: () {
+              FocusScope.of(context).requestFocus(FocusNode());
               _submitForm();
             },
           ),
@@ -136,15 +135,48 @@ class _AuthScreenState extends State<AuthScreen> {
       if (widget.model.isPatient) {
         await widget.model
             .patientLogin(_formData['email'], _formData['password']);
-        widget.model.authenticatedPatient != Null
+
+        widget.model.getAuthenticatedPatient != null
             ? Navigator.pushReplacementNamed(context, '/home')
-            : print('Login failed');
+            : showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Login Failed'),
+                    content: Text('Please login with correct credentials'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                },
+              );
       } else {
         await widget.model
             .doctorLogin(_formData['email'], _formData['password']);
-        widget.model.authenticatedDoctor != Null
+        widget.model.authenticatedDoctor != null
             ? Navigator.pushReplacementNamed(context, '/home')
-            : print('Login failed');
+            : showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Login Failed'),
+                    content: Text('Please login with correct credentials'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                },
+              );
       }
     } else {
       showDialog(
